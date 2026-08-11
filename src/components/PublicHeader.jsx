@@ -22,6 +22,7 @@ export default function PublicHeader({ maxWidth = 1080 }) {
         margin: '0 auto',
         width: '100%',
         boxSizing: 'border-box',
+        position: 'sticky',
       }}
     >
       <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
