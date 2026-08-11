@@ -13,15 +13,12 @@ export default function Sidebar() {
   const { user, logout } = useAuth();
   const location = useLocation();
 
-  // Desktop: collapsed (icon-only) vs expanded
   const [collapsed, setCollapsed] = useState(() => {
     try { return localStorage.getItem('sidebar_collapsed') === 'true'; } catch { return false; }
   });
 
-  // Mobile: drawer open/closed
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  // Close drawer on route change (user tapped a nav link)
   useEffect(() => { setDrawerOpen(false); }, [location.pathname]);
 
   function toggleCollapsed() {
@@ -49,7 +46,6 @@ export default function Sidebar() {
 
   const sidebarContent = (mobile = false) => (
     <>
-      {/* Header */}
       <div
         style={{
           display: 'flex',
@@ -68,7 +64,6 @@ export default function Sidebar() {
         {collapsed && !mobile && (
           <PulseLine status="signal" width={22} height={14} />
         )}
-        {/* Desktop toggle button */}
         {!mobile && (
           <button
             onClick={toggleCollapsed}
@@ -87,7 +82,6 @@ export default function Sidebar() {
             {collapsed ? '→' : '←'}
           </button>
         )}
-        {/* Mobile close button */}
         {mobile && (
           <button
             onClick={() => setDrawerOpen(false)}
@@ -106,7 +100,6 @@ export default function Sidebar() {
         )}
       </div>
 
-      {/* Nav links */}
       <nav style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         {navItems.map((item) => (
           <NavLink
@@ -143,7 +136,6 @@ export default function Sidebar() {
         )}
       </nav>
 
-      {/* User footer */}
       <div style={{ marginTop: 'auto', paddingTop: 16, borderTop: '1px solid var(--border-hairline)' }}>
         {(!collapsed || mobile) && (
           <div style={{ padding: '0 8px', marginBottom: 10 }}>
@@ -173,7 +165,6 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* ── Mobile top bar ── */}
       <div className="mobile-topbar">
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <PulseLine status="signal" width={24} height={14} />
@@ -195,7 +186,6 @@ export default function Sidebar() {
         </button>
       </div>
 
-      {/* ── Mobile drawer overlay ── */}
       {drawerOpen && (
         <div className="drawer-overlay" onClick={() => setDrawerOpen(false)} />
       )}
@@ -203,7 +193,6 @@ export default function Sidebar() {
         {sidebarContent(true)}
       </div>
 
-      {/* ── Desktop sidebar ── */}
       <aside
         className={`desktop-sidebar ${collapsed ? 'collapsed' : ''}`}
         style={{ background: 'var(--bg-surface)' }}

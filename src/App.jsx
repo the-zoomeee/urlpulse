@@ -15,6 +15,7 @@ import SetupGuide from './pages/SetupGuide';
 import Account from './pages/Account';
 import AdminPanel from './pages/AdminPanel';
 import NotFound from './pages/NotFound';
+import Report from './pages/Report';
 
 export default function App() {
   return (
@@ -46,6 +47,8 @@ export default function App() {
             <Route path="/jobs/:id" element={<JobDetail />} />
             <Route path="/guide" element={<SetupGuide />} />
             <Route path="/account" element={<Account />} />
+            <Route path="/report" element={<Report />} />
+            <Route path="/support" element={<Support />} />
 
             <Route element={<AdminRoute />}>
               <Route path="/admin" element={<AdminPanel />} />

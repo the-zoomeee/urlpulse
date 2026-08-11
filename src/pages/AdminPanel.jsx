@@ -13,24 +13,52 @@ function StatCard({ label, value }) {
   );
 }
 
+function TabButton({ active, onClick, children }) {
+  return (
+    <button
+      className="btn"
+      onClick={onClick}
+      style={{
+        background: active ? 'var(--bg-elevated)' : 'transparent',
+        color: 'var(--text-primary)',
+        border: '1px solid var(--border-hairline-strong)',
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
+const categoryLabels = {
+  bug: 'Bug',
+  feature_request: 'Feature request',
+  billing: 'Billing',
+  other: 'Other',
+};
+
 export default function AdminPanel() {
   const { user: currentUser } = useAuth();
   const [tab, setTab] = useState('users');
   const [stats, setStats] = useState(null);
   const [users, setUsers] = useState([]);
   const [jobs, setJobs] = useState([]);
+  const [messages, setMessages] = useState([]);
+  const [messageFilter, setMessageFilter] = useState('open');
+  const [expandedMessage, setExpandedMessage] = useState(null);
   const [error, setError] = useState('');
 
   async function loadAll() {
     try {
-      const [statsData, usersData, jobsData] = await Promise.all([
+      const [statsData, usersData, jobsData, messagesData] = await Promise.all([
         api.adminStats(),
         api.adminListUsers(),
         api.adminListJobs(),
+        api.adminListContactMessages(),
       ]);
       setStats(statsData);
       setUsers(usersData.users);
       setJobs(jobsData.jobs);
+      setMessages(messagesData.messages);
     } catch (err) {
       setError(err.message);
     }
@@ -93,12 +121,35 @@ export default function AdminPanel() {
     }
   }
 
+  async function setMessageStatus(m, status) {
+    try {
+      setError('');
+      await api.adminUpdateContactMessageStatus(m._id, status);
+      await loadAll();
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
+  async function removeMessage(m) {
+    if (!confirm('Delete this report/message permanently?')) return;
+    try {
+      setError('');
+      await api.adminDeleteContactMessage(m._id);
+      await loadAll();
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
+  const visibleMessages = messageFilter === 'all' ? messages : messages.filter((m) => m.status === messageFilter);
+
   return (
     <>
       <div className="page-header">
         <div>
           <h1>Admin</h1>
-          <p>System-wide view — every user and every job.</p>
+          <p>System-wide view — every user, every job, every report.</p>
         </div>
       </div>
 
@@ -112,36 +163,24 @@ export default function AdminPanel() {
           <StatCard label="Jobs" value={stats.totalJobs} />
           <StatCard label="Active jobs" value={stats.activeJobs} />
           <StatCard label="Auto-paused jobs" value={stats.autoPausedJobs} />
+          <StatCard label="Open reports" value={stats.openReports} />
         </div>
       )}
 
-      <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
-        <button
-          className="btn"
-          onClick={() => setTab('users')}
-          style={{
-            background: tab === 'users' ? 'var(--bg-elevated)' : 'transparent',
-            color: 'var(--text-primary)',
-            border: '1px solid var(--border-hairline-strong)',
-          }}
-        >
+      <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexWrap: 'wrap' }}>
+        <TabButton active={tab === 'users'} onClick={() => setTab('users')}>
           Users
-        </button>
-        <button
-          className="btn"
-          onClick={() => setTab('jobs')}
-          style={{
-            background: tab === 'jobs' ? 'var(--bg-elevated)' : 'transparent',
-            color: 'var(--text-primary)',
-            border: '1px solid var(--border-hairline-strong)',
-          }}
-        >
+        </TabButton>
+        <TabButton active={tab === 'jobs'} onClick={() => setTab('jobs')}>
           All jobs
-        </button>
+        </TabButton>
+        <TabButton active={tab === 'reports'} onClick={() => setTab('reports')}>
+          Reports{stats?.openReports > 0 ? ` (${stats.openReports})` : ''}
+        </TabButton>
       </div>
 
       {tab === 'users' && (
-        <div className="card" style={{ overflow: 'hidden' }}>
+        <div className="card table-scroll">
           <table>
             <thead>
               <tr>
@@ -203,7 +242,7 @@ export default function AdminPanel() {
       )}
 
       {tab === 'jobs' && (
-        <div className="card" style={{ overflow: 'hidden' }}>
+        <div className="card table-scroll">
           <table>
             <thead>
               <tr>
@@ -235,6 +274,139 @@ export default function AdminPanel() {
             </tbody>
           </table>
         </div>
+      )}
+
+      {tab === 'reports' && (
+        <>
+          <div style={{ display: 'flex', gap: 6, marginBottom: 12 }}>
+            {['open', 'in_progress', 'resolved', 'all'].map((f) => (
+              <button
+                key={f}
+                className="btn btn-ghost"
+                onClick={() => setMessageFilter(f)}
+                style={{
+                  fontSize: 12,
+                  padding: '5px 10px',
+                  color: messageFilter === f ? 'var(--text-primary)' : 'var(--text-muted)',
+                  background: messageFilter === f ? 'var(--bg-elevated)' : 'transparent',
+                }}
+              >
+                {f === 'in_progress' ? 'In progress' : f[0].toUpperCase() + f.slice(1)}
+              </button>
+            ))}
+          </div>
+
+          {visibleMessages.length === 0 ? (
+            <div className="card empty-state">
+              <h3>Nothing here</h3>
+              <p>No {messageFilter === 'all' ? '' : messageFilter} reports right now.</p>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {visibleMessages.map((m) => {
+                const open = expandedMessage === m._id;
+                return (
+                  <div key={m._id} className="card" style={{ padding: 18 }}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'flex-start',
+                        gap: 16,
+                        cursor: 'pointer',
+                      }}
+                      onClick={() => setExpandedMessage(open ? null : m._id)}
+                    >
+                      <div style={{ minWidth: 0 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                          <span style={{ fontWeight: 500, fontSize: 14 }}>{m.name}</span>
+                          <span className="mono" style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+                            {m.email}
+                          </span>
+                          <span className="badge">{categoryLabels[m.category] || m.category}</span>
+                          {m.userId && <span className="badge badge-signal">has account</span>}
+                        </div>
+                        <p
+                          style={{
+                            margin: '8px 0 0',
+                            fontSize: 13,
+                            color: 'var(--text-secondary)',
+                            whiteSpace: open ? 'pre-wrap' : 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            maxWidth: open ? 'none' : 520,
+                          }}
+                        >
+                          {m.message}
+                        </p>
+                      </div>
+                      <span
+                        className={`badge ${
+                          m.status === 'resolved' ? 'badge-signal' : m.status === 'in_progress' ? 'badge-warn' : ''
+                        }`}
+                        style={{ flexShrink: 0 }}
+                      >
+                        {m.status === 'in_progress' ? 'in progress' : m.status}
+                      </span>
+                    </div>
+
+                    {open && (
+                      <div
+                        style={{
+                          display: 'flex',
+                          gap: 8,
+                          marginTop: 16,
+                          paddingTop: 16,
+                          borderTop: '1px solid var(--border-hairline)',
+                          flexWrap: 'wrap',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <span className="mono" style={{ fontSize: 11, color: 'var(--text-muted)', marginRight: 'auto' }}>
+                          {new Date(m.createdAt).toLocaleString()}
+                        </span>
+                        {m.status !== 'in_progress' && (
+                          <button
+                            className="btn btn-ghost"
+                            style={{ fontSize: 11, padding: '4px 8px' }}
+                            onClick={() => setMessageStatus(m, 'in_progress')}
+                          >
+                            Mark in progress
+                          </button>
+                        )}
+                        {m.status !== 'resolved' && (
+                          <button
+                            className="btn btn-ghost"
+                            style={{ fontSize: 11, padding: '4px 8px' }}
+                            onClick={() => setMessageStatus(m, 'resolved')}
+                          >
+                            Mark resolved
+                          </button>
+                        )}
+                        {m.status !== 'open' && (
+                          <button
+                            className="btn btn-ghost"
+                            style={{ fontSize: 11, padding: '4px 8px' }}
+                            onClick={() => setMessageStatus(m, 'open')}
+                          >
+                            Reopen
+                          </button>
+                        )}
+                        <button
+                          className="btn btn-ghost"
+                          style={{ fontSize: 11, padding: '4px 8px', color: 'var(--danger)' }}
+                          onClick={() => removeMessage(m)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </>
       )}
     </>
   );

@@ -27,7 +27,7 @@ export default function Login() {
 
   return (
     <div className="auth-shell">
-      <div className="card" style={{ width: 380, padding: 32 }}>
+      <div className="card" style={{ width: '100%', maxWidth: 380, padding: 32 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
           <PulseLine status="signal" width={32} height={18} />
           <h1 style={{ fontSize: 20 }}>UrlPulse</h1>

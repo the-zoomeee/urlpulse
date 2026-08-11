@@ -138,7 +138,7 @@ export default function JobDetail() {
               </div>
             </div>
           </div>
-          <div style={{ display: 'flex', gap: 8 }}>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             <button className="btn btn-secondary" onClick={() => setEditing((e) => !e)}>
               {editing ? 'Cancel' : 'Edit'}
             </button>
@@ -198,7 +198,7 @@ export default function JobDetail() {
           </div>
         )}
 
-        <div style={{ display: 'flex', gap: 12, marginBottom: 24 }}>
+        <div style={{ display: 'flex', gap: 12, marginBottom: 24, flexWrap: 'wrap' }}>
           <StatCard label="Status" value={jobStatusLabel(job)} sub={`Checks every ${formatInterval(job)}`} />
           <StatCard
             label="Uptime (last 100 checks)"

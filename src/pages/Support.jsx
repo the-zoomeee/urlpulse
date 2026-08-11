@@ -37,6 +37,7 @@ export default function Support() {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-base)' }}>
       <header
+        className="public-header"
         style={{
           display: 'flex',
           alignItems: 'center',
@@ -57,7 +58,7 @@ export default function Support() {
         </Link>
       </header>
 
-      <div style={{ maxWidth: 720, margin: '0 auto', padding: '20px 40px 100px' }}>
+      <div className="public-content" style={{ maxWidth: 720, margin: '0 auto', padding: '20px 40px 100px' }}>
         <h1 style={{ fontSize: 30, marginBottom: 8 }}>Support</h1>
         <p style={{ color: 'var(--text-secondary)', fontSize: 15, marginBottom: 36 }}>
           Answers to the questions that come up most. Setting up your first job? See the{' '}
@@ -105,10 +106,12 @@ export default function Support() {
 
         <div className="card" style={{ padding: 24, marginTop: 32 }}>
           <h3 style={{ fontSize: 16, marginBottom: 8 }}>Still stuck?</h3>
-          <p style={{ fontSize: 14, color: 'var(--text-secondary)', margin: 0 }}>
-            This is a self-hosted-style project without a support ticket system built in yet — for now, reach out
-            through whatever contact channel the person running this instance has provided.
+          <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 16 }}>
+            Send us the details and we'll take a look.
           </p>
+          <Link to="/report" className="btn btn-primary" style={{ textDecoration: 'none' }}>
+            Report a problem
+          </Link>
         </div>
       </div>
     </div>

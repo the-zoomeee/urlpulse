@@ -1,0 +1,20 @@
+User-agent: *
+Allow: /
+Allow: /support
+Allow: /report
+
+# Authenticated app - nothing useful to index, and a crawler hitting these
+# just bounces to /login anyway.
+Disallow: /app
+Disallow: /jobs/
+Disallow: /account
+Disallow: /admin
+
+# Auth-flow pages. Reset/verify links carry one-time tokens in the query
+# string - a crawler following one would consume or leak it, so these are
+# excluded for safety, not just because they're low-value to index.
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /verify-email

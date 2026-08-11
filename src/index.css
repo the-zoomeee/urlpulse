@@ -104,11 +104,12 @@ button {
 
 .app-shell {
   display: flex;
-  height: 100vh;      /* fixed to viewport — the page itself never scrolls */
+  height: 100vh;
   overflow: hidden;
 }
 
-/* ── Desktop sidebar ── */
+/* Desktop sidebar - collapsible via the toggle button in Sidebar.jsx,
+   state persisted to localStorage so it survives a refresh. */
 .desktop-sidebar {
   width: var(--sidebar-w);
   flex-shrink: 0;
@@ -123,19 +124,19 @@ button {
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
-.desktop-sidebar::-webkit-scrollbar { display: none; }
-
+.desktop-sidebar::-webkit-scrollbar {
+  display: none;
+}
 .desktop-sidebar.collapsed {
   width: 60px;
   padding: 24px 8px;
 }
 
-/* ── Mobile top bar — hidden on desktop ── */
+/* Mobile top bar + drawer - hidden entirely on desktop, swapped in at the
+   768px breakpoint below. */
 .mobile-topbar {
   display: none;
 }
-
-/* ── Mobile drawer — hidden on desktop ── */
 .drawer-overlay {
   display: none;
 }
@@ -143,7 +144,6 @@ button {
   display: none;
 }
 
-/* ── Main content area ── */
 .main-content {
   flex: 1;
   min-width: 0;
@@ -169,9 +169,10 @@ button {
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
-.main-content-scroll::-webkit-scrollbar { display: none; }
+.main-content-scroll::-webkit-scrollbar {
+  display: none;
+}
 
-/* ── Auth shell ── */
 .auth-shell {
   min-height: 100vh;
   display: flex;
@@ -183,14 +184,72 @@ button {
     var(--bg-base);
 }
 
-/* ── Mobile breakpoint ── */
+/* ---------- Job card ---------- */
+/* Split into two flex children (top: pulse+name/url, meta: badges+actions)
+   so the mobile media query can restructure it purely via CSS - JobCard.jsx
+   only assigns classNames, no layout-affecting inline styles. */
+
+.job-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 20px;
+  margin-bottom: 10px;
+}
+
+.job-card-top {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 1;
+  min-width: 0;
+}
+
+.job-card-url {
+  font-size: 12px;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.job-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.job-card-timeago {
+  font-size: 12px;
+  color: var(--text-muted);
+  width: 70px;
+  text-align: right;
+}
+
+.job-card-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* ---------- Table horizontal scroll ---------- */
+/* Wrap any data table (see AdminPanel.jsx) in a card with this class so it
+   scrolls horizontally on narrow screens instead of squashing columns. */
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.table-scroll table {
+  min-width: 560px;
+}
+
+/* ---------- Mobile (max-width: 768px) ---------- */
+
 @media (max-width: 768px) {
-  /* Hide the desktop sidebar entirely */
   .desktop-sidebar {
     display: none;
   }
 
-  /* Show the mobile top bar */
   .mobile-topbar {
     display: flex;
     align-items: center;
@@ -202,7 +261,6 @@ button {
     background: var(--bg-surface);
   }
 
-  /* Full-width content with top bar offset */
   .app-shell {
     flex-direction: column;
   }
@@ -220,7 +278,6 @@ button {
     padding: 20px 20px 64px;
   }
 
-  /* Drawer overlay — dark background behind the open drawer */
   .drawer-overlay {
     display: block;
     position: fixed;
@@ -229,7 +286,6 @@ button {
     z-index: 99;
   }
 
-  /* Drawer itself — slides in from the left */
   .mobile-drawer {
     display: flex;
     flex-direction: column;
@@ -248,13 +304,13 @@ button {
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
-  .mobile-drawer::-webkit-scrollbar { display: none; }
-
+  .mobile-drawer::-webkit-scrollbar {
+    display: none;
+  }
   .mobile-drawer.open {
     transform: translateX(0);
   }
 
-  /* Make cards and tables usable on narrow screens */
   .page-header {
     flex-direction: column;
     align-items: flex-start;
@@ -262,66 +318,64 @@ button {
     margin-bottom: 20px;
   }
 
+  .page-header h1 {
+    font-size: 22px;
+  }
+
   table {
     font-size: 12px;
   }
 
-  th, td {
+  th,
+  td {
     padding: 8px 8px;
   }
-}
 
-.main-content {
-  flex: 1;
-  min-width: 0;
-  height: 100vh;
-  max-width: 1080px;
-  display: flex;
-  flex-direction: column;
-}
+  .job-card {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
 
-/* Optional slot above the scrolling area (currently just the verify-email
-   banner). Sized to its content - doesn't compete with the scroll area
-   below for height. */
-.main-content-banner-slot:empty {
-  display: none;
-}
-.main-content-banner-slot {
-  flex-shrink: 0;
-  padding: 20px 40px 0;
-}
+  .job-card-meta {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
 
-/* The actual scrolling region. Giving this (not .main-content itself)
-   overflow-y:auto means .detail-page's height:100% (in JobDetail) always
-   correctly means "100% of the space left after the banner", whether or
-   not a banner is currently showing — instead of both fighting over the
-   same box. */
-.main-content-scroll {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  padding: 32px 40px 64px;
+  .job-card-timeago {
+    width: auto;
+    text-align: left;
+  }
 
-  /* hidden scrollbar (still fully scrollable via wheel/trackpad/keyboard) */
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  .job-card-actions {
+    width: 100%;
+    justify-content: flex-end;
+    margin-left: auto;
+  }
+
+  .auth-shell {
+    padding: 16px;
+  }
+
+  /* Public marketing pages (Landing, Support, Report) */
+  .public-header {
+    padding: 16px 20px !important;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .public-hero {
+    padding: 48px 20px 40px !important;
+  }
+
+  .public-hero-title {
+    font-size: 30px !important;
+  }
+
+  .public-content {
+    padding: 16px 20px 60px !important;
+  }
 }
-
-.main-content-scroll::-webkit-scrollbar {
-  display: none;
-}
-
-.auth-shell {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  background:
-    radial-gradient(ellipse 900px 500px at 50% -10%, rgba(55, 214, 196, 0.08), transparent),
-    var(--bg-base);
-}
-
 /* ---------- Job Detail page: fixed top, scrollable "Recent checks" ---------- */
 
 .detail-page {
@@ -450,7 +504,9 @@ button {
 }
 
 .field input,
-.field select {
+.field select,
+.field textarea {
+  width: 100%;
   background: var(--bg-elevated);
   border: 1px solid var(--border-hairline-strong);
   color: var(--text-primary);

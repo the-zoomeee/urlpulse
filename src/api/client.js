@@ -73,4 +73,10 @@ export const api = {
   adminDeleteUser: (id) => request(`/admin/users/${id}`, { method: 'DELETE' }),
   adminListJobs: () => request('/admin/jobs'),
   adminToggleJob: (id) => request(`/admin/jobs/${id}/toggle`, { method: 'PATCH' }),
+
+  submitContactMessage: (body) => request('/contact', { method: 'POST', body }),
+  adminListContactMessages: (status) => request(`/admin/contact-messages${status ? `?status=${status}` : ''}`),
+  adminUpdateContactMessageStatus: (id, status) =>
+    request(`/admin/contact-messages/${id}/status`, { method: 'PATCH', body: { status } }),
+  adminDeleteContactMessage: (id) => request(`/admin/contact-messages/${id}`, { method: 'DELETE' }),
 };

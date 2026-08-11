@@ -36,7 +36,7 @@ export default function VerifyEmail() {
 
   return (
     <div className="auth-shell">
-      <div className="card" style={{ width: 380, padding: 32, textAlign: 'center' }}>
+      <div className="card" style={{ width: '100%', maxWidth: 380, padding: 32, textAlign: 'center' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 20 }}>
           <PulseLine status={status === 'error' ? 'danger' : 'signal'} width={32} height={18} />
           <h1 style={{ fontSize: 20 }}>UrlPulse</h1>

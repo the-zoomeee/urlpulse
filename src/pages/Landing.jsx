@@ -27,6 +27,7 @@ export default function Landing() {
     <div style={{ minHeight: '100vh', background: 'var(--bg-base)' }}>
       {/* Top nav */}
       <header
+        className="public-header"
         style={{
           display: 'flex',
           alignItems: 'center',
@@ -63,6 +64,7 @@ export default function Landing() {
 
       {/* Hero */}
       <section
+        className="public-hero"
         style={{
           maxWidth: 720,
           margin: '0 auto',
@@ -73,7 +75,7 @@ export default function Landing() {
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 24 }}>
           <PulseLine status="signal" width={120} height={32} />
         </div>
-        <h1 style={{ fontSize: 44, lineHeight: 1.15, marginBottom: 16 }}>
+        <h1 className="public-hero-title" style={{ fontSize: 44, lineHeight: 1.15, marginBottom: 16 }}>
           Know the moment your endpoint goes quiet.
         </h1>
         <p style={{ fontSize: 17, color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: 32 }}>
@@ -99,7 +101,7 @@ export default function Landing() {
       </section>
 
       {/* Features */}
-      <section style={{ maxWidth: 1080, margin: '0 auto', padding: '20px 40px 100px' }}>
+      <section className="public-content" style={{ maxWidth: 1080, margin: '0 auto', padding: '20px 40px 100px' }}>
         <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
           {features.map((f) => (
             <div key={f.title} className="card" style={{ padding: 28, flex: '1 1 280px' }}>
@@ -113,6 +115,7 @@ export default function Landing() {
 
       {/* Footer */}
       <footer
+        className="public-header"
         style={{
           borderTop: '1px solid var(--border-hairline)',
           padding: '24px 40px',
@@ -129,6 +132,9 @@ export default function Landing() {
         <div style={{ display: 'flex', gap: 20 }}>
           <Link to="/support" style={{ color: 'var(--text-muted)' }}>
             Support
+          </Link>
+          <Link to="/report" style={{ color: 'var(--text-muted)' }}>
+            Report a problem
           </Link>
           <Link to="/login" style={{ color: 'var(--text-muted)' }}>
             Sign in
