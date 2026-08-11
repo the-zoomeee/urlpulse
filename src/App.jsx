@@ -28,6 +28,7 @@ export default function App() {
               link). Only the CTAs inside them route somewhere auth-aware. */}
           <Route path="/" element={<Landing />} />
           <Route path="/support" element={<Support />} />
+          <Route path="/report" element={<Report />} />
 
           <Route element={<GuestOnlyLayout />}>
             <Route path="/login" element={<Login />} />
@@ -47,8 +48,6 @@ export default function App() {
             <Route path="/jobs/:id" element={<JobDetail />} />
             <Route path="/guide" element={<SetupGuide />} />
             <Route path="/account" element={<Account />} />
-            <Route path="/report" element={<Report />} />
-            <Route path="/support" element={<Support />} />
 
             <Route element={<AdminRoute />}>
               <Route path="/admin" element={<AdminPanel />} />
