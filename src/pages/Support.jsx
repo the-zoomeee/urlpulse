@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import PulseLine from '../components/PulseLine';
+import { SUPPORT_EMAIL } from '../config';
+import PublicHeader from '../components/PublicHeader';
 
 const faqs = [
   {
@@ -36,27 +37,7 @@ export default function Support() {
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-base)' }}>
-      <header
-        className="public-header"
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '20px 40px',
-          maxWidth: 720,
-          margin: '0 auto',
-        }}
-      >
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
-          <PulseLine status="signal" width={28} height={16} />
-          <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 18, color: 'var(--text-primary)' }}>
-            UrlPulse
-          </span>
-        </Link>
-        <Link to={user ? '/app' : '/login'} style={{ fontSize: 14, color: 'var(--text-secondary)', textDecoration: 'none' }}>
-          {user ? 'Back to your jobs' : 'Sign in'}
-        </Link>
-      </header>
+      <PublicHeader />
 
       <div className="public-content" style={{ maxWidth: 720, margin: '0 auto', padding: '20px 40px 100px' }}>
         <h1 style={{ fontSize: 30, marginBottom: 8 }}>Support</h1>
@@ -109,9 +90,18 @@ export default function Support() {
           <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 16 }}>
             Send us the details and we'll take a look.
           </p>
-          <Link to="/report" className="btn btn-primary" style={{ textDecoration: 'none' }}>
-            Report a problem
-          </Link>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+            <Link to="/report" className="btn btn-primary" style={{ textDecoration: 'none' }}>
+              Report a problem
+            </Link>
+            <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>
+              or email{' '}
+              <a href={`mailto:${SUPPORT_EMAIL}`} style={{ color: 'var(--text-muted)' }}>
+                {SUPPORT_EMAIL}
+              </a>{' '}
+              directly
+            </span>
+          </div>
         </div>
       </div>
     </div>

@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import PulseLine from '../components/PulseLine';
+import { SUPPORT_EMAIL } from '../config';
+import PublicHeader from '../components/PublicHeader';
 
 const features = [
   {
@@ -25,42 +27,7 @@ export default function Landing() {
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-base)' }}>
-      {/* Top nav */}
-      <header
-        className="public-header"
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '20px 40px',
-          maxWidth: 1080,
-          margin: '0 auto',
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <PulseLine status="signal" width={28} height={16} />
-          <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 18 }}>UrlPulse</span>
-        </div>
-        <nav style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-          <Link to="/support" style={{ fontSize: 14, color: 'var(--text-secondary)', textDecoration: 'none' }}>
-            Support
-          </Link>
-          {user ? (
-            <Link to="/app" className="btn btn-primary" style={{ textDecoration: 'none' }}>
-              Go to your jobs
-            </Link>
-          ) : (
-            <>
-              <Link to="/login" style={{ fontSize: 14, color: 'var(--text-secondary)', textDecoration: 'none' }}>
-                Sign in
-              </Link>
-              <Link to="/register" className="btn btn-primary" style={{ textDecoration: 'none' }}>
-                Get started
-              </Link>
-            </>
-          )}
-        </nav>
-      </header>
+      <PublicHeader />
 
       {/* Hero */}
       <section
@@ -136,6 +103,9 @@ export default function Landing() {
           <Link to="/report" style={{ color: 'var(--text-muted)' }}>
             Report a problem
           </Link>
+          <a href={`mailto:${SUPPORT_EMAIL}`} style={{ color: 'var(--text-muted)' }}>
+            {SUPPORT_EMAIL}
+          </a>
           <Link to="/login" style={{ color: 'var(--text-muted)' }}>
             Sign in
           </Link>

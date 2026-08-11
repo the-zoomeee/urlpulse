@@ -16,17 +16,21 @@ async function request(path, { method = 'GET', body, auth = true } = {}) {
     if (token) headers['Authorization'] = `Bearer ${token}`;
   }
 
-  const res = await fetch(`${BASE_URL}${path}`, {
-    method,
-    headers,
-    body: body ? JSON.stringify(body) : undefined,
-  });
+  let res;
+  try {
+    res = await fetch(`${BASE_URL}${path}`, {
+      method,
+      headers,
+      body: body ? JSON.stringify(body) : undefined,
+    });
+  } catch {
+    throw new Error("Can't reach the server right now. Check your connection, or the backend may be down.");
+  }
 
   let data = null;
   try {
     data = await res.json();
   } catch {
-    // no JSON body (e.g. 204)
   }
 
   if (!res.ok) {

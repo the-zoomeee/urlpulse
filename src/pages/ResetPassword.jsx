@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { api } from '../api/client';
-import PulseLine from '../components/PulseLine';
+import PublicHeader from '../components/PublicHeader';
 
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
@@ -39,12 +39,10 @@ export default function ResetPassword() {
   }
 
   return (
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <PublicHeader />
     <div className="auth-shell">
       <div className="card" style={{ width: 380, padding: 32 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
-          <PulseLine status="signal" width={32} height={18} />
-          <h1 style={{ fontSize: 20 }}>UrlPulse</h1>
-        </div>
 
         {!token ? (
           <>
@@ -97,6 +95,7 @@ export default function ResetPassword() {
           </>
         )}
       </div>
+    </div>
     </div>
   );
 }

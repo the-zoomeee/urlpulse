@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { api } from '../api/client';
 import { useAuth } from '../hooks/useAuth';
 import PulseLine from '../components/PulseLine';
+import PublicHeader from '../components/PublicHeader';
 
 export default function VerifyEmail() {
   const [searchParams] = useSearchParams();
@@ -35,34 +36,35 @@ export default function VerifyEmail() {
   }, [token]);
 
   return (
-    <div className="auth-shell">
-      <div className="card" style={{ width: '100%', maxWidth: 380, padding: 32, textAlign: 'center' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 20 }}>
-          <PulseLine status={status === 'error' ? 'danger' : 'signal'} width={32} height={18} />
-          <h1 style={{ fontSize: 20 }}>UrlPulse</h1>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <PublicHeader />
+      <div className="auth-shell">
+        <div className="card" style={{ width: '100%', maxWidth: 380, padding: 32, textAlign: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
+            <PulseLine status={status === 'error' ? 'danger' : 'signal'} width={48} height={24} />
+          </div>
+          {status === 'pending' && <p style={{ color: 'var(--text-secondary)', fontSize: 14 }}>Verifying your email…</p>}
+
+          {status === 'success' && (
+            <>
+              <p style={{ color: 'var(--signal)', fontSize: 14, marginBottom: 16 }}>Your email is verified.</p>
+              <Link to={user ? '/app' : '/login'} className="btn btn-primary" style={{ textDecoration: 'none', width: '100%' }}>
+                {user ? 'Go to your jobs' : 'Sign in'}
+              </Link>
+            </>
+          )}
+
+          {status === 'error' && (
+            <>
+              <div className="banner banner-error" style={{ textAlign: 'left' }}>{error}</div>
+              <p style={{ color: 'var(--text-secondary)', fontSize: 13 }}>
+                {user
+                  ? 'You can request a new verification email from your account page.'
+                  : 'Sign in and request a new verification email from your account page.'}
+              </p>
+            </>
+          )}
         </div>
-
-        {status === 'pending' && <p style={{ color: 'var(--text-secondary)', fontSize: 14 }}>Verifying your email…</p>}
-
-        {status === 'success' && (
-          <>
-            <p style={{ color: 'var(--signal)', fontSize: 14, marginBottom: 16 }}>Your email is verified.</p>
-            <Link to={user ? '/app' : '/login'} className="btn btn-primary" style={{ textDecoration: 'none', width: '100%' }}>
-              {user ? 'Go to your jobs' : 'Sign in'}
-            </Link>
-          </>
-        )}
-
-        {status === 'error' && (
-          <>
-            <div className="banner banner-error" style={{ textAlign: 'left' }}>{error}</div>
-            <p style={{ color: 'var(--text-secondary)', fontSize: 13 }}>
-              {user
-                ? 'You can request a new verification email from your account page.'
-                : 'Sign in and request a new verification email from your account page.'}
-            </p>
-          </>
-        )}
       </div>
     </div>
   );
