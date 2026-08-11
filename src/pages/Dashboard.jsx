@@ -4,6 +4,7 @@ import { api } from '../api/client';
 import { useAuth } from '../hooks/useAuth';
 import JobCard from '../components/JobCard';
 import IntervalPicker from '../components/IntervalPicker';
+import SleepModeToggle from '../components/SleepModeToggle';
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -18,6 +19,8 @@ export default function Dashboard() {
   const [expectedContent, setExpectedContent] = useState('');
   const [formError, setFormError] = useState('');
   const [creating, setCreating] = useState(false);
+
+  const [sleepMode, setSleepMode] = useState({ enabled: false });
 
   async function loadJobs() {
     try {
@@ -40,6 +43,7 @@ export default function Dashboard() {
       const body = { name, targetUrl, interval };
       if (interval === 'custom') body.customIntervalMinutes = Number(customMinutes);
       if (expectedContent.trim()) body.expectedContent = expectedContent.trim();
+      if (sleepMode.enabled) body.sleepMode = sleepMode;
       await api.createJob(body);
       setName('');
       setTargetUrl('');
@@ -47,6 +51,7 @@ export default function Dashboard() {
       setCustomMinutes('');
       setExpectedContent('');
       setShowForm(false);
+      setSleepMode({ enabled: false });
       await loadJobs();
     } catch (err) {
       setFormError(err.message);
@@ -137,6 +142,7 @@ export default function Dashboard() {
                 server that responds 200 but is actually broken underneath.
               </span>
             </div>
+            <SleepModeToggle sleepMode={sleepMode} onChange={setSleepMode} />
             <button className="btn btn-primary" type="submit" disabled={creating}>
               {creating ? 'Creating…' : 'Create job'}
             </button>

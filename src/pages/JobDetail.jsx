@@ -5,6 +5,7 @@ import { useAuth } from '../hooks/useAuth';
 import PulseLine from '../components/PulseLine';
 import IntervalPicker from '../components/IntervalPicker';
 import { jobStatus, jobStatusLabel, formatInterval, sslDaysRemaining } from '../utils/jobStatus';
+import SleepModeToggle from '../components/SleepModeToggle';
 
 function StatCard({ label, value, sub, valueColor }) {
   return (
@@ -37,6 +38,8 @@ export default function JobDetail() {
   const [saveError, setSaveError] = useState('');
   const [saving, setSaving] = useState(false);
 
+  const [sleepMode, setSleepMode] = useState({ enabled: false });
+
   async function load() {
     try {
       const [jobData, logsData] = await Promise.all([api.getJob(id), api.getJobLogs(id, 100)]);
@@ -47,6 +50,7 @@ export default function JobDetail() {
       setInterval_(jobData.job.interval);
       setCustomMinutes(jobData.job.customIntervalMinutes || '');
       setExpectedContent(jobData.job.expectedContent || '');
+      setSleepMode(jobData.job.sleepMode || { enabled: false });
     } catch (err) {
       setError(err.message);
     }
@@ -83,7 +87,7 @@ export default function JobDetail() {
     setSaveError('');
     setSaving(true);
     try {
-      const body = { name, targetUrl, interval, expectedContent: expectedContent.trim() || '' };
+      const body = { name, targetUrl, interval, expectedContent: expectedContent.trim() || '', sleepMode };
       if (interval === 'custom') body.customIntervalMinutes = Number(customMinutes);
       await api.updateJob(id, body);
       setEditing(false);
@@ -160,6 +164,12 @@ export default function JobDetail() {
           </div>
         )}
 
+        {!job.autoPaused && job.isActive && job.isAsleep && job.sleepMode?.enabled && (
+          <div className="banner" style={{ borderColor: 'var(--border-hairline-strong)', color: 'var(--text-secondary)' }}>
+            Sleeping until {job.sleepMode.endTime} ({job.sleepMode.timezone}) — no checks run during this window.
+          </div>
+        )}
+
         {editing && (
           <div className="card" style={{ padding: 24, marginBottom: 24 }}>
             {saveError && <div className="banner banner-error">{saveError}</div>}
@@ -191,6 +201,7 @@ export default function JobDetail() {
                   maxLength={500}
                 />
               </div>
+              <SleepModeToggle sleepMode={sleepMode} onChange={setSleepMode} />
               <button className="btn btn-primary" type="submit" disabled={saving}>
                 {saving ? 'Saving…' : 'Save changes'}
               </button>
