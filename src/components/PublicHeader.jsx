@@ -23,6 +23,9 @@ export default function PublicHeader({ maxWidth = 1080 }) {
         width: '100%',
         boxSizing: 'border-box',
         position: 'sticky',
+        top: 0,
+        background: 'var(--bg-base)',
+        zIndex: 100,
       }}
     >
       <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
