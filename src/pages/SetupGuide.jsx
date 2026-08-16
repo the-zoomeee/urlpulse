@@ -101,6 +101,7 @@ function CodeBlock({ lang, children }) {
         border: '1px solid var(--border-hairline-strong)',
         borderRadius: 'var(--radius-sm)',
         overflow: 'hidden',
+        maxWidth: '100%',
       }}
     >
       <div
@@ -115,7 +116,7 @@ function CodeBlock({ lang, children }) {
       >
         {lang}
       </div>
-      <pre style={{ margin: 0, padding: '14px 16px', overflowX: 'auto' }}>
+      <pre style={{ margin: 0, padding: '14px 16px', overflowX: 'auto', maxWidth: '100%' }}>
         <code className="mono" style={{ fontSize: 13, color: 'var(--text-primary)' }}>
           {children}
         </code>
@@ -150,7 +151,7 @@ export default function SetupGuide() {
             >
               {step.n}
             </div>
-            <div style={{ flex: 1 }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
               <h3 style={{ fontSize: 16, marginBottom: 10 }}>{step.title}</h3>
               <div style={{ fontSize: 14, lineHeight: 1.6, color: 'var(--text-primary)' }}>{step.body}</div>
             </div>
