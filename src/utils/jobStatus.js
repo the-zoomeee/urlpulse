@@ -1,7 +1,7 @@
 export function jobStatus(job) {
-
   if (job.autoPaused) return 'danger';
   if (!job.isActive) return 'idle';
+  if (job.isAsleep) return 'idle';
   if (!job.lastHitAt) return 'idle';
   if (job.consecutiveFailures >= 3) return 'warn';
   if (job.consecutiveFailures > 0) return 'warn';
@@ -17,6 +17,7 @@ export function sslDaysRemaining(job) {
 export function jobStatusLabel(job) {
   if (job.autoPaused) return 'Auto-paused';
   if (!job.isActive) return 'Paused';
+  if (job.isAsleep) return 'Sleeping (quiet hours)';
   if (!job.lastHitAt) return 'Not checked yet';
   if (job.consecutiveFailures >= 3) return `${job.consecutiveFailures} failures in a row`;
   if (job.consecutiveFailures > 0) return `${job.consecutiveFailures} recent failure`;
