@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import PulseLine from './PulseLine';
+import ThemeToggleButton from './ThemeToggleButton';
 
 const navItems = [
   { to: '/app', label: 'Jobs', end: true, icon: '⊞' },
@@ -24,7 +25,7 @@ export default function Sidebar() {
   function toggleCollapsed() {
     const next = !collapsed;
     setCollapsed(next);
-    try { localStorage.setItem('sidebar_collapsed', String(next)); } catch {}
+    try { localStorage.setItem('sidebar_collapsed', String(next)); } catch { }
   }
 
   const navLinkStyle = ({ isActive }) => ({
@@ -146,19 +147,29 @@ export default function Sidebar() {
             </div>
           </div>
         )}
-        <button
-          className="btn btn-ghost"
-          title={collapsed && !mobile ? 'Log out' : undefined}
+        <div
           style={{
-            width: '100%',
-            justifyContent: collapsed && !mobile ? 'center' : 'flex-start',
-            padding: collapsed && !mobile ? '10px 0' : undefined,
+            display: 'flex',
+            flexDirection: collapsed && !mobile ? 'column' : 'row',
+            gap: 6,
           }}
-          onClick={logout}
         >
-          <span style={{ fontSize: 16 }}>⇥</span>
-          {(!collapsed || mobile) && 'Log out'}
-        </button>
+          {(collapsed && !mobile) && <ThemeToggleButton style={{ width: '100%' }} />}
+          <button
+            className="btn btn-ghost"
+            title={collapsed && !mobile ? 'Log out' : undefined}
+            style={{
+              flex: 1,
+              justifyContent: collapsed && !mobile ? 'center' : 'flex-start',
+              padding: collapsed && !mobile ? '10px 0' : undefined,
+            }}
+            onClick={logout}
+          >
+            <span style={{ fontSize: 16 }}>⇥</span>
+            {(!collapsed || mobile) && 'Log out'}
+          </button>
+          {!(collapsed && !mobile) && <ThemeToggleButton />}
+        </div>
       </div>
     </>
   );

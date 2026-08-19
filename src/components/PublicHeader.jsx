@@ -1,11 +1,8 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import PulseLine from './PulseLine';
+import ThemeToggleButton from './ThemeToggleButton';
 
-// Used on every logged-out-facing page (Landing, Support, Report, NotFound,
-// Login, Register, ForgotPassword, ResetPassword, VerifyEmail) so the navbar
-// sits at the same width/position everywhere instead of each page hand-rolling
-// its own header at a different maxWidth.
 export default function PublicHeader({ maxWidth = 1080 }) {
   const { user } = useAuth();
   const { pathname } = useLocation();
@@ -36,6 +33,7 @@ export default function PublicHeader({ maxWidth = 1080 }) {
       </Link>
 
       <nav style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+        <ThemeToggleButton />
         {pathname !== '/support' && (
           <Link to="/support" style={{ fontSize: 14, color: 'var(--text-secondary)', textDecoration: 'none' }}>
             Support

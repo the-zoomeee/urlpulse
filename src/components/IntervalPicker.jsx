@@ -15,7 +15,7 @@ export default function IntervalPicker({ interval, customMinutes, onChange, isPr
               padding: '8px 14px',
               fontSize: 13,
               background: interval === p ? 'var(--signal)' : 'var(--bg-elevated)',
-              color: interval === p ? '#06211d' : 'var(--text-primary)',
+              color: interval === p ? 'var(--signal-contrast-text)' : 'var(--text-primary)',
               border: '1px solid ' + (interval === p ? 'var(--signal)' : 'var(--border-hairline-strong)'),
             }}
           >
@@ -32,7 +32,7 @@ export default function IntervalPicker({ interval, customMinutes, onChange, isPr
             padding: '8px 14px',
             fontSize: 13,
             background: interval === 'custom' ? 'var(--signal)' : 'var(--bg-elevated)',
-            color: interval === 'custom' ? '#06211d' : isPro ? 'var(--text-primary)' : 'var(--text-muted)',
+            color: interval === 'custom' ? 'var(--signal-contrast-text)' : isPro ? 'var(--text-primary)' : 'var(--text-muted)',
             border: '1px solid ' + (interval === 'custom' ? 'var(--signal)' : 'var(--border-hairline-strong)'),
           }}
         >
