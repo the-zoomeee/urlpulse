@@ -52,6 +52,7 @@ export default function Sidebar() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: collapsed && !mobile ? 'center' : 'space-between',
+          gap: 8,
           padding: '0 8px',
           marginBottom: 32,
         }}
@@ -69,15 +70,30 @@ export default function Sidebar() {
           <button
             onClick={toggleCollapsed}
             title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             style={{
               background: 'transparent',
-              border: 'none',
+              border: '1px solid var(--border-hairline-strong)',
+              borderRadius: 'var(--radius-sm)',
               cursor: 'pointer',
-              color: 'var(--text-muted)',
-              padding: '4px',
-              fontSize: 16,
+              color: 'var(--text-secondary)',
+              width: 28,
+              height: 28,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: 14,
               lineHeight: 1,
               flexShrink: 0,
+              transition: 'background 0.15s ease, color 0.15s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'var(--bg-elevated)';
+              e.currentTarget.style.color = 'var(--text-primary)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'transparent';
+              e.currentTarget.style.color = 'var(--text-secondary)';
             }}
           >
             {collapsed ? '→' : '←'}
