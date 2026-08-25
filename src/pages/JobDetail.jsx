@@ -100,7 +100,13 @@ export default function JobDetail() {
   }
 
   if (error) return <div className="banner banner-error">{error}</div>;
-  if (!job) return <p style={{ color: 'var(--text-muted)' }}>Loading…</p>;
+  if (!job) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', padding: '80px 0' }}>
+        <PulseLine status="signal" width={80} height={24} />
+      </div>
+    );
+  }
 
   const total = logs.length;
   const successes = logs.filter((l) => l.success).length;

@@ -272,6 +272,18 @@ button {
 /* ---------- Table horizontal scroll ---------- */
 /* Wrap any data table (see AdminPanel.jsx) in a card with this class so it
    scrolls horizontally on narrow screens instead of squashing columns. */
+
+.admin-report-row {
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  margin: -10px;
+  padding: 10px;
+  transition: background 0.15s ease;
+}
+.admin-report-row:hover {
+  background: var(--bg-elevated);
+}
+
 .table-scroll {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;

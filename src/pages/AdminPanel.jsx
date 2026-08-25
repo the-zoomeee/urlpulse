@@ -46,6 +46,7 @@ export default function AdminPanel() {
   const [messageFilter, setMessageFilter] = useState('open');
   const [expandedMessage, setExpandedMessage] = useState(null);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
 
   async function loadAll() {
     try {
@@ -61,6 +62,8 @@ export default function AdminPanel() {
       setMessages(messagesData.messages);
     } catch (err) {
       setError(err.message);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -143,6 +146,14 @@ export default function AdminPanel() {
   }
 
   const visibleMessages = messageFilter === 'all' ? messages : messages.filter((m) => m.status === messageFilter);
+
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', padding: '80px 0' }}>
+        <PulseLine status="signal" width={80} height={24} />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -307,13 +318,21 @@ export default function AdminPanel() {
                 const open = expandedMessage === m._id;
                 return (
                   <div key={m._id} className="card" style={{ padding: 18 }}>
-                    <div
+                    <button
+                      type="button"
+                      className="admin-report-row"
+                      aria-expanded={open}
                       style={{
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'flex-start',
                         gap: 16,
-                        cursor: 'pointer',
+                        width: '100%',
+                        background: 'transparent',
+                        border: 'none',
+                        font: 'inherit',
+                        textAlign: 'left',
+                        color: 'inherit',
                       }}
                       onClick={() => setExpandedMessage(open ? null : m._id)}
                     >
@@ -348,7 +367,7 @@ export default function AdminPanel() {
                       >
                         {m.status === 'in_progress' ? 'in progress' : m.status}
                       </span>
-                    </div>
+                    </button>
 
                     {open && (
                       <div

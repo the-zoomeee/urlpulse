@@ -290,6 +290,7 @@ export default function Sidebar() {
         </div>
         <button
           onClick={() => setDrawerOpen(true)}
+          aria-label="Open menu"
           style={{
             background: 'transparent',
             border: 'none',

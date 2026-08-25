@@ -5,6 +5,7 @@ import { useAuth } from '../hooks/useAuth';
 import JobCard from '../components/JobCard';
 import IntervalPicker from '../components/IntervalPicker';
 import SleepModeToggle from '../components/SleepModeToggle';
+import PulseLine from '../components/PulseLine';
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -150,7 +151,11 @@ export default function Dashboard() {
         </div>
       )}
 
-      {jobs === null && !error && <p style={{ color: 'var(--text-muted)' }}>Loading…</p>}
+      {jobs === null && !error && (
+        <div style={{ display: 'flex', justifyContent: 'center', padding: '80px 0' }}>
+          <PulseLine status="signal" width={80} height={24} />
+        </div>
+      )}
 
       {jobs?.length === 0 && (
         <div className="empty-state card">
