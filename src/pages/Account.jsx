@@ -4,7 +4,7 @@ import { api } from '../api/client';
 import { useAuth } from '../hooks/useAuth';
 
 export default function Account() {
-  const { user, logout } = useAuth();
+  const { user, logout, setUser } = useAuth();
   const navigate = useNavigate();
   const [confirming, setConfirming] = useState(false);
   const [error, setError] = useState('');
@@ -13,6 +13,8 @@ export default function Account() {
   const [resendSent, setResendSent] = useState(false);
   const [resendError, setResendError] = useState('');
   const [resending, setResending] = useState(false);
+  const [digestError, setDigestError] = useState('');
+  const [digestSaving, setDigestSaving] = useState(false);
 
   async function handleDelete() {
     setDeleting(true);
@@ -37,6 +39,19 @@ export default function Account() {
       setResendError(err.message);
     } finally {
       setResending(false);
+    }
+  }
+
+    async function handleToggleDigest() {
+    setDigestError('');
+    setDigestSaving(true);
+    try {
+      const data = await api.updatePreferences({ digestEmailsEnabled: !user.digestEmailsEnabled });
+      setUser(data.user);
+    } catch (err) {
+      setDigestError(err.message);
+    } finally {
+      setDigestSaving(false);
     }
   }
 
@@ -91,6 +106,29 @@ export default function Account() {
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="card" style={{ padding: 24, marginBottom: 20, maxWidth: 480 }}>
+        <h3 style={{ fontSize: 15, marginBottom: 4 }}>Notifications</h3>
+        <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 16 }}>
+          Failure and SSL expiry alerts always go out — this only controls the weekly summary.
+        </p>
+        {digestError && <div className="banner banner-error">{digestError}</div>}
+        <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}>
+          <input
+            type="checkbox"
+            checked={!!user?.digestEmailsEnabled}
+            onChange={handleToggleDigest}
+            disabled={digestSaving}
+            style={{ width: 'auto', accentColor: 'var(--signal)' }}
+          />
+          <span style={{ fontSize: 14 }}>
+            Weekly summary email
+            <span style={{ display: 'block', fontSize: 12, color: 'var(--text-muted)' }}>
+              Overall uptime, jobs that had trouble, and anything auto-paused — once a week.
+            </span>
+          </span>
+        </label>
       </div>
 
       <div className="card" style={{ padding: 24, maxWidth: 480, borderColor: 'var(--danger-dim)' }}>

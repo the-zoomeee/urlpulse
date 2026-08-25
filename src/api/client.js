@@ -83,4 +83,5 @@ export const api = {
   adminUpdateContactMessageStatus: (id, status) =>
     request(`/admin/contact-messages/${id}/status`, { method: 'PATCH', body: { status } }),
   adminDeleteContactMessage: (id) => request(`/admin/contact-messages/${id}`, { method: 'DELETE' }),
+  updatePreferences: (body) => request('/auth/me/preferences', { method: 'PATCH', body }),
 };
