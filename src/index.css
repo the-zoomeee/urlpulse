@@ -158,8 +158,14 @@ button {
   display: none;
 }
 .desktop-sidebar.collapsed {
-  width: 60px;
-  padding: 24px 8px;
+  width: 76px;
+  padding: 24px 12px;
+}
+
+.desktop-sidebar nav a:hover,
+.mobile-drawer nav a:hover {
+  background: var(--bg-elevated-hover) !important;
+  color: var(--text-primary) !important;
 }
 
 /* Mobile top bar + drawer - hidden entirely on desktop, swapped in at the
